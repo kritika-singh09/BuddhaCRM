@@ -11,6 +11,7 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // In LoginPage.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -34,8 +35,14 @@ const LoginPage = () => {
         JSON.stringify(response.data.department)
       );
 
-      // Redirect to dashboard
-      navigate("/dashboard");
+      // Redirect based on role
+      if (response.data.role === "admin") {
+        navigate("/dashboard");
+      } else if (response.data.role === "staff") {
+        navigate("/tasks");
+      } else {
+        navigate("/dashboard"); // Default fallback
+      }
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed. Please try again."

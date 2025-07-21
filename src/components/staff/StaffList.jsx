@@ -155,12 +155,12 @@ const StaffList = () => {
   return (
     <div className="p-6 overflow-auto h-full bg-background">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-extrabold text-text">Staff</h1>
+        <h1 className="text-3xl font-extrabold text-[#1f2937]">Staff</h1>
         <button
           onClick={handleAddStaff}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center"
+          className="bg-secondary text-dark px-4 py-2 cursor-pointer rounded-lg hover:shadow-lg transition-shadow font-medium"
         >
-          <Plus size={18} className="mr-2" /> Add Staff
+          <Plus size={18} className="w-4 h-4 inline mr-2" /> Add Staff
         </button>
       </div>
 

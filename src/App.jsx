@@ -33,7 +33,7 @@ const App = () => {
                 <Sidebar />
                 <div className="flex-1 flex flex-col overflow-hidden">
                   <Header />
-                  <main className="flex-1 overflow-hidden">
+                  <main className="flex-1 overflow-y-auto">
                     <Routes>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/tasks" element={<TaskAssign />} />
