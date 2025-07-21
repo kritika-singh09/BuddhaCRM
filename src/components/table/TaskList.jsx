@@ -12,7 +12,7 @@ const TaskList = ({
     filter === "all" ? tasks : tasks.filter((task) => task.status === filter);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white rounded-lg shadow-md overflow-auto">
       <div className="p-4  flex justify-between items-center">
         <h2 className="text-xl font-bold text-text">Task List</h2>
         <div className="flex items-center space-x-2">

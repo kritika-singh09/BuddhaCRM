@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import {
   LayoutDashboard,
@@ -10,19 +10,32 @@ import {
   HelpCircle,
   Settings,
   UserCheck,
+  ChartBarStacked,
+  BedDouble,
+  LogOut,
+  UserRound,
 } from "lucide-react";
+import logoImage from "../assets/buddhaavenuelogo.png";
 
 const Sidebar = () => {
   const { isSidebarOpen } = useAppContext();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
     { icon: UserCheck, label: "Task Assigned", path: "/tasks" },
+    { icon: ChartBarStacked, label: "Category", path: "/category" },
+    { icon: BedDouble, label: "Room", path: "/room" },
+    { icon: UserRound, label: "Staff", path: "/staff" },
+
     { icon: ShoppingCart, label: "Orders", path: "/orders" },
     { icon: Users, label: "Customers", path: "/customers" },
-    // { icon: BarChart2, label: "Analytics", path: "/analytics" },
-    // { icon: FileText, label: "Reports", path: "/reports" },
   ];
 
   const bottomNavItems = [
@@ -36,9 +49,10 @@ const Sidebar = () => {
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex md:flex-col z-30`}
     >
-      <div className="flex items-center justify-center p-6 border-b border-secondary">
-        <h1 className="text-2xl font-bold">Buddha</h1>
+      <div className="flex items-center justify-center p-2">
+        <img src={logoImage} alt="Buddha Avenue" className="h-30 mx-auto" />{" "}
       </div>
+
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item, index) => (
           <Link
@@ -66,6 +80,13 @@ const Sidebar = () => {
             {item.label}
           </Link>
         ))}
+        <button
+          onClick={handleLogout}
+          className="flex items-center px-4 py-2.5 rounded-lg hover:bg-hover transition-colors duration-200 w-full text-left"
+        >
+          <LogOut className="w-5 h-5 mr-3" />
+          Logout
+        </button>
       </div>
     </aside>
   );
