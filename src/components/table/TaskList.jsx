@@ -14,7 +14,7 @@ const TaskList = ({
   return (
     <div className="bg-white rounded-lg shadow-md overflow-auto">
       <div className="p-4  flex justify-between items-center">
-        <h2 className="text-xl font-bold text-text">Task List</h2>
+        <h2 className="text-xl font-bold text-[#1f2937]">Task List</h2>
         <div className="flex items-center space-x-2">
           <Filter size={16} className="text-gray-500" />
           <select
