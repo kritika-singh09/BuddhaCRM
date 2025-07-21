@@ -45,7 +45,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 bg-primary text-white w-64 transform ${
+      className={`fixed inset-y-0 left-0 bg-[#1f2937] text-[#c2ab65]  w-64 transform ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex md:flex-col z-30`}
     >
@@ -60,8 +60,8 @@ const Sidebar = () => {
             to={item.path}
             className={`flex items-center px-4 py-2.5 rounded-lg transition-colors duration-200 ${
               location.pathname === item.path
-                ? "bg-background text-primary font-semibold"
-                : "hover:bg-secondary"
+                ? "bg-[#c2ab65]  text-[#1f2937] font-semibold"
+                : "hover:bg-secondary hover:text-[#1f2937]"
             }`}
           >
             <item.icon className="w-5 h-5 mr-3" />

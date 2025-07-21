@@ -19,18 +19,23 @@ const StaffForm = ({
   ];
 
   const handleDepartmentChange = (e) => {
-    const deptId = parseInt(e.target.value);
-    if (deptId) {
-      const selectedDept = departments.find((d) => d.id === deptId);
-      if (selectedDept) {
-        setCurrentStaff({
-          ...currentStaff,
-          department: [{ id: selectedDept.id, name: selectedDept.name }],
-        });
+    const options = e.target.options;
+    const selectedDepts = [];
+
+    for (let i = 0; i < options.length; i++) {
+      if (options[i].selected) {
+        const deptId = parseInt(options[i].value);
+        const dept = departments.find((d) => d.id === deptId);
+        if (dept) {
+          selectedDepts.push({ id: dept.id, name: dept.name });
+        }
       }
-    } else {
-      setCurrentStaff({ ...currentStaff, department: [] });
     }
+
+    setCurrentStaff({
+      ...currentStaff,
+      department: selectedDepts,
+    });
   };
 
   return (
@@ -40,18 +45,6 @@ const StaffForm = ({
           {editMode ? "Edit Staff" : "Add Staff"}
         </h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Username</label>
-            <input
-              type="text"
-              value={currentStaff.username}
-              onChange={(e) =>
-                setCurrentStaff({ ...currentStaff, username: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
@@ -64,7 +57,18 @@ const StaffForm = ({
               required
             />
           </div>
-
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Username</label>
+            <input
+              type="text"
+              value={currentStaff.username}
+              onChange={(e) =>
+                setCurrentStaff({ ...currentStaff, username: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md"
+              required
+            />
+          </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
@@ -90,7 +94,6 @@ const StaffForm = ({
                 setCurrentStaff({
                   ...currentStaff,
                   role: e.target.value,
-                  // Clear department if changing to admin
                   department:
                     e.target.value === "admin" ? [] : currentStaff.department,
                 })
@@ -103,28 +106,61 @@ const StaffForm = ({
               <option value="admin">Admin</option>
             </select>
           </div>
-
-          {/* Only show department selection for staff role */}
+          {/*  */}
           {currentStaff.role === "staff" && (
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">
-                Department
+              <label className="block text-sm font-medium  mb-2">
+                Departments
               </label>
-              <select
-                value={currentStaff.department?.[0]?.id || ""}
-                onChange={handleDepartmentChange}
-                className="w-full px-3 py-2 border rounded-md"
-                required={currentStaff.role === "admin"}
-              >
-                <option value="">Select Department</option>
+              <div className="space-y-2 max-h-40 overflow-y-auto border rounded-md p-2">
                 {departments.map((dept) => (
-                  <option key={dept.id} value={dept.id}>
-                    {dept.name.charAt(0).toUpperCase() + dept.name.slice(1)}
-                  </option>
+                  <div key={dept.id} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id={`dept-${dept.id}`}
+                      checked={
+                        currentStaff.department?.some(
+                          (d) => d.id === dept.id
+                        ) || false
+                      }
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          // Add department
+                          setCurrentStaff({
+                            ...currentStaff,
+                            department: [
+                              ...(currentStaff.department || []),
+                              { id: dept.id, name: dept.name },
+                            ],
+                          });
+                        } else {
+                          // Remove department
+                          setCurrentStaff({
+                            ...currentStaff,
+                            department: currentStaff.department.filter(
+                              (d) => d.id !== dept.id
+                            ),
+                          });
+                        }
+                      }}
+                      className="mr-2"
+                    />
+                    <label htmlFor={`dept-${dept.id}`}>
+                      {dept.name.charAt(0).toUpperCase() + dept.name.slice(1)}
+                    </label>
+                  </div>
                 ))}
-              </select>
+              </div>
+              {currentStaff.department?.length === 0 &&
+                currentStaff.role === "staff" && (
+                  <p className="text-xs text-red-500 mt-1">
+                    Please select at least one department
+                  </p>
+                )}
             </div>
           )}
+          {/*  */}
+
           <div className="flex justify-end space-x-2">
             <button
               type="button"

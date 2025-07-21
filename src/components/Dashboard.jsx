@@ -129,7 +129,7 @@ const Dashboard = () => {
   return (
     <div className="p-6 overflow-auto h-full bg-background">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-extrabold text-text">
+        <h1 className="text-3xl font-extrabold text-[#1f2937]">
           BUDDHA AVENUE DASHBOARD
         </h1>
         <button
@@ -184,7 +184,9 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <h3 className="text-sm text-text/70">{card.title}</h3>
-                <p className="text-2xl font-bold text-text">{card.value}</p>
+                <p className="text-2xl font-bold text-[#1f2937]">
+                  {card.value}
+                </p>
               </div>
               <div
                 className={`h-1 ${
@@ -199,7 +201,7 @@ const Dashboard = () => {
       {activeCard && (
         <div className="bg-white rounded-lg shadow-md p-6 mb-6 animate-fadeIn">
           <div className="flex justify-between items-center mb-8">
-            <h2 className="text-xl font-extrabold text-text">
+            <h2 className="text-xl font-extrabold text-[#1f2937]">
               {dashboardCards.find((c) => c.id === activeCard)?.title} Details
             </h2>
           </div>

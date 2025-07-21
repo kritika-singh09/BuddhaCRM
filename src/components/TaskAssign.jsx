@@ -112,7 +112,9 @@ const TaskAssign = () => {
   return (
     <div className="p-6 overflow-auto h-full bg-background">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-extrabold text-text">Task Assignment</h1>
+        <h1 className="text-3xl font-extrabold text-[#1f2937]">
+          Task Assignment
+        </h1>
         {/* <div className="relative">
           <Search
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -171,7 +173,9 @@ const TaskAssign = () => {
                   </span>
                 </div>
                 <h3 className="text-sm text-text/70">{dept.name}</h3>
-                <p className="text-lg font-bold text-text">{dept.action}</p>
+                <p className="text-lg font-bold text-[#1f2937]">
+                  {dept.action}
+                </p>
               </div>
               <div className={`h-1 ${colorClass}`}></div>
             </div>

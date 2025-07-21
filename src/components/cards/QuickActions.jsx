@@ -4,7 +4,9 @@ import { PlusCircle, CheckCircle, LogOut } from "lucide-react";
 const QuickActions = () => {
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-      <h2 className="text-xl font-extrabold text-text mb-8">Quick Actions</h2>
+      <h2 className="text-xl font-extrabold text-[#1f2937] mb-8">
+        Quick Actions
+      </h2>
       <div className="flex flex-wrap gap-5">
         <button className="bg-red-600 text-white px-6 py-4 rounded-xl flex items-center gap-3 shadow-sm hover:bg-red-700 transition-colors focus:outline-none focus:ring-4 focus:ring-red-600 focus:ring-offset-2">
           <PlusCircle className="w-5 h-5" /> New Booking
