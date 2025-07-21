@@ -9,6 +9,9 @@ import CategoryList from "./components/category/CategoryList.jsx";
 import RoomList from "./components/room/RoomList";
 import LoginPage from "./components/login/LoginPage";
 import StaffList from "./components/staff/StaffList";
+import BookingForm from "./components/booking/BookingForm";
+
+import Booking from "./components/booking/Booking";
 
 // Protected route component
 const ProtectedRoute = ({ children }) => {
@@ -33,14 +36,15 @@ const App = () => {
                 <Sidebar />
                 <div className="flex-1 flex flex-col overflow-hidden">
                   <Header />
-                  <main className="flex-1 overflow-hidden">
+                  <main className="flex-1 overflow-y-auto">
                     <Routes>
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/tasks" element={<TaskAssign />} />
                       <Route path="/category" element={<CategoryList />} />
                       <Route path="/room" element={<RoomList />} />
                       <Route path="/staff" element={<StaffList />} />
-
+ <Route path="/bookingform" element={<BookingForm />} />
+              <Route path="/booking" element={<Booking />} />
                       {/* Add more routes as needed */}
                     </Routes>
                   </main>
