@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 export const AppContext = createContext();
 
@@ -11,9 +11,48 @@ const AppContextProvider = ({ children }) => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Only run on mobile
+      if (window.innerWidth >= 768) return;
+
+      // Check if sidebar is open
+      if (!isSidebarOpen) return;
+
+      // Check if click is outside sidebar
+      const sidebar = document.querySelector("aside");
+      const hamburger = document.querySelector(
+        'button[aria-label="Toggle sidebar"]'
+      );
+
+      if (
+        sidebar &&
+        !sidebar.contains(event.target) &&
+        hamburger &&
+        !hamburger.contains(event.target)
+      ) {
+        closeSidebar();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [isSidebarOpen]);
+
   const value = {
     isSidebarOpen,
     toggleSidebar,
+    closeSidebar,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
