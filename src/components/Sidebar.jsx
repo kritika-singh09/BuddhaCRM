@@ -33,6 +33,7 @@ const Sidebar = () => {
     { icon: ChartBarStacked, label: "Category", path: "/category" },
     { icon: BedDouble, label: "Room", path: "/room" },
         { icon: FileText, label: "Booking", path: "/booking" },
+         { icon: FileText, label: "Reservation", path: "/reservation" },
     { icon: UserRound, label: "Staff", path: "/staff" },
 
     { icon: ShoppingCart, label: "Orders", path: "/orders" },

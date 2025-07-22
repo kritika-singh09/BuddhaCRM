@@ -10,9 +10,16 @@ import RoomList from "./components/room/RoomList";
 import LoginPage from "./components/login/LoginPage";
 import StaffList from "./components/staff/StaffList";
 import BookingForm from "./components/booking/BookingForm";
-
 import Booking from "./components/booking/Booking";
+import Reservation from "./components/reservation/Reservation";
+import ReservationForm from "./components/reservation/Reservationform";
 
+import { useNavigate } from "react-router-dom";
+// Wrapper for BookingForm to handle onClose
+const BookingFormPage = () => {
+  const navigate = useNavigate();
+  return <BookingForm onClose={() => navigate('/booking')} />;
+};
 // Protected route component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -43,8 +50,11 @@ const App = () => {
                       <Route path="/category" element={<CategoryList />} />
                       <Route path="/room" element={<RoomList />} />
                       <Route path="/staff" element={<StaffList />} />
- <Route path="/bookingform" element={<BookingForm />} />
+ <Route path="/bookingform" element={<BookingFormPage />} />
               <Route path="/booking" element={<Booking />} />
+               <Route path="/reservation"element={<Reservation/>}/>
+              <Route path="/reservationform"element={<ReservationForm/>}/>
+          
                       {/* Add more routes as needed */}
                     </Routes>
                   </main>
