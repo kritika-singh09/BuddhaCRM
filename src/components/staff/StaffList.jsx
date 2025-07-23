@@ -29,19 +29,27 @@ const StaffList = () => {
   const fetchStaff = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5000/api/auth/register",
+        "http://localhost:5000/api/housekeeping/available-staff",
         {
           headers: {
-            Authorization: `Bearer ${getAuthToken()}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
-      setStaff(response.data);
+
+      // Check if the response has the expected structure
+      if (response.data && response.data.availableStaff) {
+        setStaff(response.data.availableStaff);
+      } else {
+        setStaff(response.data || []);
+      }
+
       setError(null);
     } catch (err) {
-      setError("Failed to fetch staff");
       console.error("Error fetching staff:", err);
+      setError("Failed to fetch staff");
     } finally {
       setLoading(false);
     }
@@ -180,54 +188,53 @@ const StaffList = () => {
                   Email
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Password
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Role
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Department
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
               </tr>
             </thead>
-            <tbody
-              className="bg-white divide-y divide-gray-200 overflow-auto"
-              style={{ scrollbarWidth: "none" }}
-            >
+            <tbody className="bg-white divide-y divide-gray-200">
               {staff.map((staffMember) => (
                 <tr key={staffMember._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center mr-3">
-                        {staffMember.username.charAt(0).toUpperCase()}
+                        {staffMember.username
+                          ? staffMember.username.charAt(0).toUpperCase()
+                          : "?"}
                       </div>
-                      <div className="font-medium">{staffMember.username}</div>
+                      <div className="font-medium">
+                        {staffMember.username || "Unknown"}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {staffMember.email}
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {staffMember.password ? "••••••••" : "N/A"}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap capitalize">
                     {staffMember.role}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {getDepartmentName(staffMember.department)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleEditStaff(staffMember)}
-                        className="p-1 rounded-full text-blue-600 hover:bg-blue-50"
-                      >
-                        <Edit size={18} />
-                      </button>
-                      <button
-                        onClick={() => handleDeleteStaff(staffMember._id)}
-                        className="p-1 rounded-full text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+                    {staffMember.role === "admin"
+                      ? "N/A"
+                      : staffMember.department &&
+                        staffMember.department.length > 0
+                      ? staffMember.department
+                          .map(
+                            (dept) =>
+                              dept.name.charAt(0).toUpperCase() +
+                              dept.name.slice(1)
+                          )
+                          .join(", ")
+                      : "None"}
                   </td>
                 </tr>
               ))}
@@ -237,7 +244,7 @@ const StaffList = () => {
                     colSpan="5"
                     className="px-6 py-8 text-center text-gray-500"
                   >
-                    No staff found. Add staff members to get started.
+                    No staff found.
                   </td>
                 </tr>
               )}

@@ -15,7 +15,7 @@ import {
 // In TaskAssign.jsx, at the top of the file:
 import TaskList from "../components/table/TaskList";
 import HousekeepingCard from "../components/taskcard/housekeeping/HousekeepingCard.jsx";
-import LaundryCard from "../components/taskcard/laundry/LaundryCard.jsx";
+// import LaundryCard from "../components/taskcard/laundry/LaundryCard.jsx";
 // import MaintenanceCard from "../components/taskcard/MaintenanceCard.jsx";
 // import RoomServiceCard from "../components/taskcard/RoomServiceCard.jsx";
 // import ReceptionCard from "../components/taskcard/ReceptionCard.jsx";
@@ -35,25 +35,35 @@ const TaskAssign = () => {
     priority: "medium",
   });
 
+  const departmentTaskCounts = {
+    Housekeeping: tasks.filter((t) => t.department === "Housekeeping").length,
+    Laundry: tasks.filter((t) => t.department === "Laundry").length,
+  };
   const handleTaskAdded = (newTask) => {
-    setTasks([...tasks, newTask]);
-  };
-  // Calculate task counts for each department
-  const departmentTaskCounts = {};
-  departments.forEach((dept) => {
-    departmentTaskCounts[dept.name] = tasks.filter(
-      (t) => t.department === dept.name
-    ).length;
-  });
+    // Format the new task to match the structure expected in the task list
+    const formattedTask = {
+      id: newTask._id,
+      title: newTask.title || `Task ${newTask._id?.slice(-4) || "New"}`,
+      roomId: newTask.roomId,
+      roomNumber: newTask.roomNumber || "Unknown",
+      department: newTask.department || "Housekeeping",
+      staff: newTask.assignedTo?.username || "Unassigned",
+      priority: newTask.priority || "medium",
+      status: newTask.status || "pending",
+    };
 
-  const openAddTaskModal = (department) => {
-    setSelectedDepartment(department);
-    setNewTask({
-      ...newTask,
-      department: department,
-    });
-    setShowAddModal(true);
+    // Add the new task to the existing tasks
+    setTasks((prevTasks) => [...prevTasks, formattedTask]);
   };
+
+  // const openAddTaskModal = (department) => {
+  //   setSelectedDepartment(department);
+  //   setNewTask({
+  //     ...newTask,
+  //     department: department,
+  //   });
+  //   setShowAddModal(true);
+  // };
 
   // Add this function to your TaskAssign component
   const handleStatusChange = (taskId, newStatus) => {
@@ -94,10 +104,10 @@ const TaskAssign = () => {
             onTaskAdded={handleTaskAdded}
           />
         )}
-        <LaundryCard
+        {/* <LaundryCard
           taskCount={departmentTaskCounts["Laundry"]}
           onClick={() => openAddTaskModal("Laundry")}
-        />
+        /> */}
         {/* <MaintenanceCard
           taskCount={departmentTaskCounts["Maintenance"]}
           onClick={() => openAddTaskModal("Maintenance")}

@@ -41,6 +41,7 @@ const App = () => {
                       {/* Make sure this route exists */}
                       <Route path="/category" element={<CategoryList />} />
                       <Route path="/room" element={<RoomList />} />
+                      <Route path="/staff" element={<StaffList />} />
                       {/* Add more routes as needed */}
                     </Routes>
                   </main>

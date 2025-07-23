@@ -1,8 +1,12 @@
-// In HousekeepingForm.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const HousekeepingForm = ({ onClose, onTaskAdded }) => {
+const HousekeepingForm = ({
+  onClose,
+  onTaskAdded,
+  editMode = false,
+  currentTask = null,
+}) => {
   const [housekeepingTask, setHousekeepingTask] = useState({
     roomId: "",
     cleaningType: "daily",
@@ -16,26 +20,36 @@ const HousekeepingForm = ({ onClose, onTaskAdded }) => {
   const [staff, setStaff] = useState([]);
 
   useEffect(() => {
+    if (editMode && currentTask) {
+      setHousekeepingTask({
+        _id: currentTask._id,
+        roomId: currentTask.roomId,
+        cleaningType: currentTask.cleaningType || "daily",
+        notes: currentTask.notes || "",
+        priority: currentTask.priority || "medium",
+        assignedTo: currentTask.assignedTo || "",
+        status: currentTask.status || "pending",
+      });
+    }
+  }, [editMode, currentTask]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        // Get auth token from localStorage
         const token = localStorage.getItem("token");
 
-        // Set up headers with the token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
 
-        // Fetch rooms
         const roomsResponse = await axios.get(
           "http://localhost:5000/api/rooms/all",
           config
         );
         setRooms(roomsResponse.data);
 
-        // Fetch staff with proper error handling
         const staffResponse = await axios.get(
           "http://localhost:5000/api/housekeeping/available-staff",
           config
@@ -49,13 +63,33 @@ const HousekeepingForm = ({ onClose, onTaskAdded }) => {
         ) {
           setStaff(staffResponse.data.availableStaff);
         }
+
+        if (editMode && currentTask?._id) {
+          const taskResponse = await axios.get(
+            `http://localhost:5000/api/housekeeping/tasks/${currentTask._id}`,
+            config
+          );
+
+          const taskData = taskResponse.data;
+
+          setHousekeepingTask({
+            _id: taskData._id,
+            roomId: taskData.roomId,
+            cleaningType: taskData.cleaningType || "daily",
+            notes: taskData.notes || "",
+            priority: taskData.priority || "medium",
+            assignedTo: taskData.assignedTo || "",
+            status: taskData.status || "pending",
+          });
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
+        setError("Failed to load form data");
       }
     };
 
     fetchData();
-  }, []);
+  }, [editMode, currentTask]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,43 +99,81 @@ const HousekeepingForm = ({ onClose, onTaskAdded }) => {
     }));
   };
 
+  useEffect(() => {
+    console.log("HousekeepingForm mounted with props:", {
+      editMode,
+      currentTask,
+    });
+
+    if (editMode && currentTask) {
+      console.log("Current task data:", currentTask);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("Rooms loaded:", rooms);
+    console.log("Staff loaded:", staff);
+    console.log("Current housekeepingTask state:", housekeepingTask);
+  }, [rooms, staff, housekeepingTask]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
     try {
-      // Get auth token from localStorage
       const token = localStorage.getItem("token");
 
-      // Set up headers with the token
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const selectedRoom = rooms.find(
+        (room) => room._id === housekeepingTask.roomId
+      );
+
+      const taskData = {
+        roomId: housekeepingTask.roomId,
+        roomNumber: selectedRoom?.room_number,
+        cleaningType: housekeepingTask.cleaningType,
+        priority: housekeepingTask.priority,
+        notes: housekeepingTask.notes,
+        assignedTo: housekeepingTask.assignedTo || undefined,
+        status: housekeepingTask.status || "pending",
       };
 
-      const response = await axios.post(
-        "http://localhost:5000/api/housekeeping/tasks",
-        housekeepingTask,
-        config
-      );
+      let response;
+
+      if (editMode && housekeepingTask._id) {
+        response = await axios.put(
+          `http://localhost:5000/api/housekeeping/tasks/${housekeepingTask._id}`,
+          taskData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      } else {
+        response = await axios.post(
+          "http://localhost:5000/api/housekeeping/tasks",
+          taskData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
 
       onTaskAdded(response.data);
       onClose();
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to create task");
-      console.error("Error saving task:", err);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error saving task:", error);
+      setError(error.response?.data?.error || "Failed to save task");
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-xs bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Add Housekeeping Task</h2>
-
+        <h2 className="text-xl font-bold mb-4">
+          {editMode ? "Edit Housekeeping Task" : "Add Housekeeping Task"}
+        </h2>
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             {error}
@@ -140,8 +212,8 @@ const HousekeepingForm = ({ onClose, onTaskAdded }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="daily">Daily Cleaning</option>
-              <option value="deep">Deep Cleaning</option>
               <option value="checkout">Checkout Cleaning</option>
+              <option value="standard">Standard Cleaning</option>
             </select>
           </div>
 

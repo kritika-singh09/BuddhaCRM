@@ -1,4 +1,3 @@
-// src/components/departments/HousekeepingCard.jsx
 import React from "react";
 import { Home } from "lucide-react";
 import DepartmentCard from "../DepartmentCard";
