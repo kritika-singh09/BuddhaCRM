@@ -154,7 +154,7 @@ const StaffList = () => {
 
   return (
     <div className="p-6 overflow-auto h-full bg-background">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 mt-6 ">
         <h1 className="text-3xl font-extrabold text-[#1f2937]">Staff</h1>
         <button
           onClick={handleAddStaff}
@@ -190,7 +190,10 @@ const StaffList = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody
+              className="bg-white divide-y divide-gray-200 overflow-auto"
+              style={{ scrollbarWidth: "none" }}
+            >
               {staff.map((staffMember) => (
                 <tr key={staffMember._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">

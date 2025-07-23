@@ -33,14 +33,14 @@ const App = () => {
                 <Sidebar />
                 <div className="flex-1 flex flex-col overflow-hidden">
                   <Header />
-                  <main className="flex-1 overflow-y-auto">
+                  <main className="flex-1 overflow-hidden">
                     <Routes>
+                      <Route path="/" element={<Dashboard />} />
                       <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/tasks" element={<TaskAssign />} />
+                      <Route path="/tasks" element={<TaskAssign />} />{" "}
+                      {/* Make sure this route exists */}
                       <Route path="/category" element={<CategoryList />} />
                       <Route path="/room" element={<RoomList />} />
-                      <Route path="/staff" element={<StaffList />} />
-
                       {/* Add more routes as needed */}
                     </Routes>
                   </main>

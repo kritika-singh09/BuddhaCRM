@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
 import {
@@ -14,13 +14,20 @@ import {
   BedDouble,
   LogOut,
   UserRound,
+  X,
 } from "lucide-react";
 import logoImage from "../assets/buddhaavenuelogo.png";
 
 const Sidebar = () => {
-  const { isSidebarOpen } = useAppContext();
+  const { isSidebarOpen, closeSidebar } = useAppContext();
   const location = useLocation();
   const navigate = useNavigate();
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    const role = localStorage.getItem("role");
+    setUserRole(role ? role.toUpperCase() : "");
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -33,7 +40,6 @@ const Sidebar = () => {
     { icon: ChartBarStacked, label: "Category", path: "/category" },
     { icon: BedDouble, label: "Room", path: "/room" },
     { icon: UserRound, label: "Staff", path: "/staff" },
-
     { icon: ShoppingCart, label: "Orders", path: "/orders" },
     { icon: Users, label: "Customers", path: "/customers" },
   ];
@@ -45,12 +51,20 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 bg-[#1f2937] text-[#c2ab65]  w-64 transform ${
+      className={`fixed inset-y-0 left-0 bg-[#1f2937] text-[#c2ab65] w-64 transform ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex md:flex-col z-30`}
     >
-      <div className="flex items-center justify-center p-2">
-        <img src={logoImage} alt="Buddha Avenue" className="h-30 mx-auto" />{" "}
+      <div className="flex flex-col items-center p-2 relative">
+        <img src={logoImage} alt="Buddha Avenue" className="h-30 mx-auto" />
+        <div className="text-center mt-2 font-bold text-lg">{userRole}</div>
+        <button
+          onClick={closeSidebar}
+          className="md:hidden absolute top-4 right-4 text-[#c2ab65] hover:text-white"
+          aria-label="Close sidebar"
+        >
+          <X size={24} />
+        </button>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
@@ -60,9 +74,10 @@ const Sidebar = () => {
             to={item.path}
             className={`flex items-center px-4 py-2.5 rounded-lg transition-colors duration-200 ${
               location.pathname === item.path
-                ? "bg-[#c2ab65]  text-[#1f2937] font-semibold"
+                ? "bg-[#c2ab65] text-[#1f2937] font-semibold"
                 : "hover:bg-secondary hover:text-[#1f2937]"
             }`}
+            onClick={() => window.innerWidth < 768 && closeSidebar()}
           >
             <item.icon className="w-5 h-5 mr-3" />
             {item.label}
@@ -75,6 +90,7 @@ const Sidebar = () => {
             key={index}
             to={item.path}
             className="flex items-center px-4 py-2.5 rounded-lg hover:bg-hover transition-colors duration-200"
+            onClick={() => window.innerWidth < 768 && closeSidebar()}
           >
             <item.icon className="w-5 h-5 mr-3" />
             {item.label}
@@ -82,7 +98,7 @@ const Sidebar = () => {
         ))}
         <button
           onClick={handleLogout}
-          className="flex items-center px-4 py-2.5 rounded-lg hover:bg-hover transition-colors duration-200 w-full text-left"
+          className="md:flex items-center px-4 py-2.5 rounded-lg hover:bg-hover transition-colors duration-200 w-full text-left hidden"
         >
           <LogOut className="w-5 h-5 mr-3" />
           Logout
