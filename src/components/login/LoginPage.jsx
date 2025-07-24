@@ -12,6 +12,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   // In LoginPage.jsx
+  // In LoginPage.jsx, update the handleSubmit function:
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -30,19 +31,14 @@ const LoginPage = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("username", response.data.username);
+      localStorage.setItem("userId", response.data.userId); // Add this line
       localStorage.setItem(
         "department",
         JSON.stringify(response.data.department)
       );
 
-      // Redirect based on role
-      if (response.data.role === "admin") {
-        navigate("/dashboard");
-      } else if (response.data.role === "staff") {
-        navigate("/tasks");
-      } else {
-        navigate("/dashboard"); // Default fallback
-      }
+      // Always redirect to dashboard after login
+      navigate("/dashboard");
     } catch (err) {
       setError(
         err.response?.data?.message || "Login failed. Please try again."

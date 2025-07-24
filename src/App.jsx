@@ -9,7 +9,7 @@ import CategoryList from "./components/category/CategoryList.jsx";
 import RoomList from "./components/room/RoomList";
 import LoginPage from "./components/login/LoginPage";
 import StaffList from "./components/staff/StaffList";
-
+import StaffWorkTask from "./components/StaffWorkTask";
 // Protected route component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -42,6 +42,7 @@ const App = () => {
                       <Route path="/category" element={<CategoryList />} />
                       <Route path="/room" element={<RoomList />} />
                       <Route path="/staff" element={<StaffList />} />
+                      <Route path="/staff-work" element={<StaffWorkTask />} />
                       {/* Add more routes as needed */}
                     </Routes>
                   </main>

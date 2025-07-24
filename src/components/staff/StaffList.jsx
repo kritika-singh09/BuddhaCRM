@@ -18,6 +18,51 @@ const StaffList = () => {
     department: [],
   });
 
+  // Add this after your useState declarations
+  useEffect(() => {
+    // Use dummy data if API fails
+    const dummyStaff = [
+      {
+        _id: "1",
+        username: "admin123",
+        email: "admin@example.com",
+        role: "admin",
+        department: [],
+      },
+      {
+        _id: "2",
+        username: "kitchen1",
+        email: "kitchen@example.com",
+        role: "staff",
+        department: [{ id: 1, name: "kitchen" }],
+      },
+      {
+        _id: "3",
+        username: "maintenance1",
+        email: "maintenance@example.com",
+        role: "staff",
+        department: [
+          { id: 4, name: "maintenance" },
+          { id: 5, name: "other" },
+        ],
+      },
+      {
+        _id: "4",
+        username: "reception1",
+        email: "reception@example.com",
+        role: "staff",
+        department: [{ id: 3, name: "reception" }],
+      },
+    ];
+
+    // Try to fetch from API first
+    fetchStaff().catch(() => {
+      // If API fails, use dummy data
+      setStaff(dummyStaff);
+      setLoading(false);
+    });
+  }, []);
+
   const getAuthToken = () => {
     return localStorage.getItem("token");
   };
