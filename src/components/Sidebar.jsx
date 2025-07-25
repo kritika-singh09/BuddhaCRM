@@ -56,6 +56,8 @@ const Sidebar = () => {
         { label: "Inventory Management", path: "/laundry/inventorymanagement", icon: Package },
       ],
     },
+    
+    { icon: UserRound, label: "Cab", path: "/cab" },
     { icon: ShoppingCart, label: "Orders", path: "/orders" }, // Existing Orders, assuming it's separate from Laundry Orders
     { icon: Users, label: "Customers", path: "/customers" },
   ];

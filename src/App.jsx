@@ -17,7 +17,9 @@ import ReservationForm from "./components/reservation/Reservationform";
 import Order from "./components/laundary/Order.jsx"
 import Inventory from "./components/laundary/Inventory.jsx"
 import { useNavigate } from "react-router-dom";
-
+import UpdateBookingForm from "./components/booking/Updateformbooking.jsx";
+import Cabbookingform from "./components/cab/cabbookingform.jsx"
+import Cab from "./components/cab/cab.jsx"
 // Wrapper for BookingForm to handle onClose
 const BookingFormPage = () => {
   const navigate = useNavigate();
@@ -58,9 +60,12 @@ const App = () => {
                <Route path="/reservation"element={<Reservation/>}/>
               <Route path="/reservationform"element={<ReservationForm/>}/>
        
-          
+           <Route path="/updatebookingform"element={<UpdateBookingForm/>}/>
           <Route path="/laundry/ordermanagement"element={<Order/>}/>
-              <Route path="/laundry/inventorymanagement"element={<Inventory/>}/>       
+              <Route path="/laundry/inventorymanagement"element={<Inventory/>}/>  
+              <Route path="/cab"element={<Cab/>}/>
+              <Route path="/cabbookingform"element={<Cabbookingform/>}/>
+              <Route path="/updatebookingcab"element={<Cabbookingform/>}/>     
                     </Routes>
                   </main>
                 </div>
