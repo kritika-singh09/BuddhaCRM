@@ -253,18 +253,23 @@ const App = () => {
                       placeholder="Item Name"
                       value={item.itemName}
                       onChange={(e) => handleItemChange(index, e)}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:[color:var(--color-primary)]  focus:border-[color:var(--color-primary)] "
                       required
                     />
-                    <input
-                      type="text"
-                      name="itemType"
-                      placeholder="Item Type (e.g., 't-shirt')"
-                      value={item.itemType}
-                      onChange={(e) => handleItemChange(index, e)}
-                      className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
-                      required
-                    />
+                  
+                    <select
+  name="itemType"
+  value={item.itemType}
+  onChange={(e) => handleItemChange(index, e)}
+  className="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm focus:[color:var(--color-primary)]  focus:border-[color:var(--color-primary)] "
+  required
+>
+  <option value="">Select Item Type</option>
+  <option value="guest">Guest</option>
+  <option value="house">House</option>
+  <option value="uniform">Uniform</option>
+</select>
+
                     <input
                       type="number"
                       name="quantity"
@@ -315,20 +320,25 @@ const App = () => {
                 </select>
               </div>
               <div>
-                <label htmlFor="totalCharge" className="block text-sm font-medium text-gray-700 mb-1">
-                  <DollarSign size={16} className="inline-block mr-1 text-yellow-600" /> Total Charge
-                </label>
-                <input
-                  type="number"
-                  id="totalCharge"
-                  name="totalCharge"
-                  value={formData.totalCharge}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  step="0.01"
-                  min="0"
-                  required
-                />
+
+                <label htmlFor="laundryServiceType" className="block text-sm font-medium text-gray-700 mb-1">
+  <DollarSign size={16} className="inline-block mr-1 text-yellow-600" /> Laundry Service Type
+</label>
+<select
+  id="laundryServiceType"
+  name="laundryServiceType"
+  value={formData.laundryServiceType}
+  onChange={handleChange}
+  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+  required
+>
+  <option value="">Select Service</option>
+  <option value="wash">Wash</option>
+  <option value="iron">Iron</option>
+  <option value="dry_clean">Dry Clean</option>
+  <option value="wash+iron">Wash + Iron</option>
+</select>
+
               </div>
             </div>
 
@@ -376,7 +386,7 @@ const App = () => {
         <h1 className="text-3xl font-extrabold text-gray-800 mb-4 sm:mb-0">Laundry Order Management</h1>
         <button
           onClick={handleAddOrder}
-          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105"
+          className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-lg text-white bg-[color:var(--color-primary)]  hover:bg-[color:var(--color-primary)]  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105"
         >
           <Plus size={20} className="mr-2" /> Add New Order
         </button>
@@ -398,16 +408,18 @@ const App = () => {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
+
         <div className="relative w-full md:w-64">
-          <input
-            type="text"
-            placeholder="Search by Customer or Order ID..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full px-4 py-2 pl-10 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-          <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-        </div>
+  <input
+    type="text"
+    placeholder="Search by Customer or Order ID..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    className="block w-full px-4 py-2 pl-10 border border-gray-300 rounded-md shadow-sm border border-secondary rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] sm:text-sm"
+  />
+  <User size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+</div>
+
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
@@ -434,6 +446,9 @@ const App = () => {
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Amount
+                  </th>
+                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
                   </th>
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Actions</span>

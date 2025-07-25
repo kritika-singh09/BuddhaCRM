@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, Package, Hash, Tag, Scale, Clock, X, Save } from 'lucide-react';
 
 // Main App Component for Inventory Tracking
-const App = () => {
+const InventoryForm= () => {
   // State to hold all inventory items
   const [inventory, setInventory] = useState(() => {
     // Initialize inventory from localStorage or with dummy data if not found
@@ -342,4 +342,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default InventoryForm;
