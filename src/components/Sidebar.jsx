@@ -35,7 +35,7 @@ const Sidebar = () => {
         { icon: FileText, label: "Booking", path: "/booking" },
          { icon: FileText, label: "Reservation", path: "/reservation" },
     { icon: UserRound, label: "Staff", path: "/staff" },
-
+  { icon: UserRound, label: "Laundary", path: "/laundary" },
     { icon: ShoppingCart, label: "Orders", path: "/orders" },
     { icon: Users, label: "Customers", path: "/customers" },
   ];

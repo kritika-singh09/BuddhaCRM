@@ -13,8 +13,9 @@ import BookingForm from "./components/booking/BookingForm";
 import Booking from "./components/booking/Booking";
 import Reservation from "./components/reservation/Reservation";
 import ReservationForm from "./components/reservation/Reservationform";
-
+import LaundaryDashboard from "./components/laundary/Laundarydashboard.jsx"
 import { useNavigate } from "react-router-dom";
+import Customer from "./components/laundary/Customer.jsx";
 // Wrapper for BookingForm to handle onClose
 const BookingFormPage = () => {
   const navigate = useNavigate();
@@ -54,7 +55,8 @@ const App = () => {
               <Route path="/booking" element={<Booking />} />
                <Route path="/reservation"element={<Reservation/>}/>
               <Route path="/reservationform"element={<ReservationForm/>}/>
-          
+          <Route path="/laundary" element={<LaundaryDashboard/>}/>
+          <Route path="/customer"element={<Customer/>}/>
                       {/* Add more routes as needed */}
                     </Routes>
                   </main>

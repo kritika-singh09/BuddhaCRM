@@ -165,19 +165,7 @@ const ReservationEdit = ({ room, onClose, onSaveSuccess }) => {
               <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
               <div className="relative flex items-center mt-1">
                 <FaRegCheckCircle className="absolute left-3 text-gray-400 pointer-events-none" />
-                {/* <select
-                  name="status"
-                  value={editFormData.status}
-                  onChange={handleChange}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                >
-                  <option value="available">Available</option>
-                  <option value="booked">Booked</option>
-                  <option value="maintenance">Maintenance</option>
-                  <option value="occupied">Occupied</option>
-                  <option value="cleaning">Cleaning</option>
-                  {/* Add other statuses as needed */}
-                {/* </select> */} *
+                
                 <div className="mb-4">
   <label className="block text-sm font-medium mb-1">Status</label>
   <select
