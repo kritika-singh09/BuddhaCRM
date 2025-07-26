@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { FaCalendarAlt, FaUser, FaDoorOpen, FaBed, FaCreditCard, FaInfoCircle, FaHotel, FaCar, FaAddressCard, FaBuilding, FaPhone, FaEnvelope, FaCity, FaGlobe, FaIdCard, FaRegMoneyBillAlt, FaRegStickyNote, FaRegClock, FaRegListAlt, FaRegCheckCircle, FaRegTimesCircle, FaRegUserCircle, FaRegCreditCard, FaRegStar, FaRegFlag, FaRegEdit, FaRegClone, FaRegCommentDots, FaRegFileAlt, FaRegCalendarPlus, FaRegCalendarCheck, FaRegCalendarTimes, FaRegCalendar, FaRegUser, FaRegAddressBook, FaRegBell, FaRegMap, FaRegBuilding, FaTimes } from "react-icons/fa"; // Added FaTimes for the close button
-
+import { useNavigate } from "react-router-dom";
 // Define InputWithIcon component directly within this file
 const InputWithIcon = ({ icon, type, name, placeholder, value, onChange, className, required, min, max, step, readOnly }) => {
   return (
@@ -550,9 +550,9 @@ const ReservationForm = () => {
           <h3 className="text-xl font-semibold mb-6 flex items-center gap-2 text-[color:var(--color-text)]">
             <FaCalendarAlt className="text-amber-400" /> Reservation Details
           </h3>
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* GRC No - Display only, not for user input (autofilled by backend) */}
-            <InputWithIcon icon={<FaAddressCard />} type="text" name="grcNo" placeholder="GRC No (Auto-generated)" value={formData.grcNo} onChange={() => {}} readOnly className="bg-gray-100 border border-secondary rounded-lg cursor-not-allowed" />
+           <div className="grid md:grid-cols-3 gap-6">
+           
+            {/* <InputWithIcon icon={<FaAddressCard />} type="text" name="grcNo" placeholder="GRC No (Auto-generated)" value={formData.grcNo} onChange={() => {}} readOnly className="bg-gray-100 border border-secondary rounded-lg cursor-not-allowed" /> */}
             <InputWithIcon icon={<FaRegListAlt />} type="text" name="bookingRefNo" placeholder="Booking Ref No" value={formData.bookingRefNo} onChange={handleChange} className="bg-white border border-secondary rounded-lg" />
             <div className="relative flex items-center">
               <FaRegListAlt className="absolute left-3 text-gray-400 pointer-events-none" />
@@ -562,7 +562,7 @@ const ReservationForm = () => {
                 <option value="Walk-in">Walk-in</option>
                 <option value="Agent">Agent</option>
               </select>
-            </div>
+            </div>  
 
             {/* Category Dropdown */}
             <div className="relative flex items-center">
@@ -787,7 +787,7 @@ const ReservationForm = () => {
         </section>
 
         {/* Additional Details */}
-        <section className="rounded-xl p-6 border border-[color:var(--color-border)] shadow-sm">
+        {/* <section className="rounded-xl p-6 border border-[color:var(--color-border)] shadow-sm">
           <h3 className="text-xl font-semibold mb-6 flex items-center gap-2  text-[color:var(--color-text)]">
             <FaInfoCircle className="text-amber-400" /> Other Details
           </h3>
@@ -802,14 +802,79 @@ const ReservationForm = () => {
             </div>
             <InputWithIcon icon={<FaRegUser />} type="text" name="createdBy" placeholder="Created By" value={formData.createdBy} onChange={handleChange} className="bg-gray-100 border border-secondary rounded-lg cursor-not-allowed" readOnly />
           </div>
-        </section>
+        </section> */}
+        {/* Additional Details */}
+<section className="rounded-xl p-6 border border-[color:var(--color-border)] shadow-sm">
+  <h3 className="text-xl font-semibold mb-6 flex items-center gap-2 text-[color:var(--color-text)]">
+    <FaInfoCircle className="text-amber-400" /> Other Details
+  </h3>
+  <div className="grid md:grid-cols-3 gap-6">
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="vip"
+        id="vip"
+        checked={formData.vip}
+        onChange={handleChange}
+        className="form-checkbox"
+      />
+      <label htmlFor="vip" className="text-sm">VIP Guest</label>
+    </div>
+
+    <div className="flex items-center gap-2">
+      <input
+        type="checkbox"
+        name="isForeignGuest"
+        id="isForeignGuest"
+        checked={formData.isForeignGuest}
+        onChange={handleChange}
+        className="form-checkbox"
+      />
+      <label htmlFor="isForeignGuest" className="text-sm">Foreign Guest</label>
+    </div>
+
+    {/* Created By Dropdown */}
+    <div className="flex items-center gap-2">
+      <FaRegUser className="text-gray-500" />
+      <select
+        name="createdBy"
+        value={formData.createdBy}
+        onChange={handleChange}
+        className="w-full bg-gray-100 border border-secondary rounded-lg px-3 py-2 text-sm"
+      >
+        <option value="">Select Created By</option>
+        <option value="Admin">Admin</option>
+        <option value="Frontdesk">Frontdesk</option>
+      </select>
+    </div>
+  </div>
+</section>
+
 
         {/* Submission and Status */}
-        <div className="flex justify-center mt-8">
+        {/* <div className="flex justify-center mt-8">
           <button type="submit" className="px-8 py-3 bg-[color:var(--color-primary)] text-white font-semibold rounded-lg shadow-md hover:bg-[color:var(--color-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" disabled={submissionStatus === 'submitting'}>
             {submissionStatus === 'submitting' ? 'Submitting...' : 'Create Reservation'}
           </button>
-        </div>
+        </div> */}
+{/* Submission and Status */}
+<div className="flex justify-end gap-4 mt-8">
+  <button
+    type="button"
+   // Make sure to define this function in your component
+    className="px-8 py-3 bg-gray-300 text-gray-800 font-semibold rounded-lg shadow-md hover:bg-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+  >
+    Cancel
+  </button>
+
+  <button
+    type="submit"
+    className="px-8 py-3 bg-[color:var(--color-primary)] text-white font-semibold rounded-lg shadow-md hover:bg-[color:var(--color-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+    disabled={submissionStatus === 'submitting'}
+  >
+    {submissionStatus === 'submitting' ? 'Submitting...' : 'Create Reservation'}
+  </button>
+</div>
 
         {submissionStatus && (
           <div className={`mt-4 p-3 rounded-md text-center ${submissionStatus === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>

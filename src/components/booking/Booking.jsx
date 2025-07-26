@@ -98,6 +98,25 @@ const BookingPage = () => {
   return (
     <div className="p-6 bg-[#fff9e6] min-h-screen relative">
       <div className="flex justify-between items-center mb-4">
+  <h2 className="text-2xl font-semibold">Bookings</h2>
+  
+  <div className="flex gap-2 ml-auto">
+    <Link
+      to="/bookingform"
+      className="bg-[color:var(--color-primary)] text-[color:var(--color-text)] px-4 py-2 rounded"
+    >
+      Add Booking
+    </Link>
+    <Link
+      to="/updatebookingform"
+      className="bg-[color:var(--color-primary)] text-[color:var(--color-text)] px-4 py-2 rounded"
+    >
+      Update Booking
+    </Link>
+  </div>
+</div>
+
+      {/* <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Bookings</h2>
         <Link
           to="/bookingform"
@@ -105,7 +124,13 @@ const BookingPage = () => {
         >
           Add Booking
         </Link>
-      </div>
+        <Link
+          to="/updatebookingform"
+          className="bg-[color:var(--color-primary)] text-[color:var(--color-text)] px-4 py-2 rounded"
+        >
+          Update Booking
+        </Link>
+      </div> */}
 
       <div className="mb-4">
         <input

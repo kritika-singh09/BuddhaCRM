@@ -247,10 +247,7 @@ const BookingForm = ({ onBookingSuccess, onClose }) => {
         if (onBookingSuccess) {
           onBookingSuccess(data.booking);
         }
-        // Optionally, if you want to clear other fields but keep GRC No,
-        // you would restructure this part. For now, GRC No will update.
-        // If you want to navigate after showing success, uncomment the next line:
-        // navigate('/booking');
+      
       } else {
         console.error("Booking failed:", data);
         setMessage(`Booking failed: ${typeof data.error === 'string' ? data.error : JSON.stringify(data)}`);
@@ -347,7 +344,7 @@ const BookingForm = ({ onBookingSuccess, onClose }) => {
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
             {/* GRC No. Field - Always visible and read-only */}
-            <InputWithIcon
+            {/* <InputWithIcon
                 icon={<FaRegAddressCard />}
                 type="text"
                 name="grcNo" // Important for identification
@@ -356,7 +353,7 @@ const BookingForm = ({ onBookingSuccess, onClose }) => {
                 readOnly={true} // This field should be read-only
                 inputClassName="bg-gray-100 border border-secondary rounded-lg cursor-not-allowed"
                 className="col-span-full md:col-span-1" // Take full width on small screens, one column on md
-            />
+            /> */}
             <div className="relative flex items-center">
               <FaUser className="absolute left-3 text-gray-400 pointer-events-none" />
               <select
@@ -703,13 +700,7 @@ const BookingForm = ({ onBookingSuccess, onClose }) => {
           >
             Submit Booking
           </button>
-        <button
-            type="submit"
-            to="/updatebookingform"
-            className="px-8 py-3 bg-[color:var(--color-primary)] text-white font-semibold rounded-lg shadow-md hover:bg-[color:var(--color-hover)] transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-          >
-            Update Booking
-          </button>
+       
         </div>
        
       </form>

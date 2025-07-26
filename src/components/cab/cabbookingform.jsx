@@ -162,7 +162,7 @@ function CabBookingForm() {
 
         {/* Guest or Room Info (Conditional Rendering) */}
         {showGuestInfo && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-blue-50 rounded-lg border bg-[color:var(--color-primary)]">
             <h3 className="col-span-full text-lg font-semibold text-blue-800 mb-2">Guest Information</h3>
             <div>
               <label htmlFor="guestName" className="block text-sm font-medium text-gray-700 mb-1">Guest Name</label>
@@ -383,17 +383,12 @@ function CabBookingForm() {
          <div className="flex justify-center mt-8">
   <button
     type="submit"
-    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105"
+    className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[color:var(--color-primary)] focus:ring-2 focus:ring-offset-2 focus:bg-[color:var(--color-primary)] transform hover:scale-105"
   >
     Submit Cab Request
   </button>
 
-  <Link
-    to="/updatebookingcab"
-    className="ml-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105"
-  >
-    Update Cab Request
-  </Link>
+ 
 </div>
 
       </form>

@@ -19,13 +19,12 @@ import Inventory from "./components/laundary/Inventory.jsx"
 import { useNavigate } from "react-router-dom";
 import UpdateBookingForm from "./components/booking/Updateformbooking.jsx";
 import Cabbookingform from "./components/cab/cabbookingform.jsx"
-import Cab from "./components/cab/cab.jsx"
-// Wrapper for BookingForm to handle onClose
+import Cab from "./components/cab/cab.jsx";
+import Pantry from "./components/Pantry/Pantry.jsx"
 const BookingFormPage = () => {
   const navigate = useNavigate();
   return <BookingForm onClose={() => navigate('/booking')} />;
 };
-// Protected route component
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -33,7 +32,6 @@ const ProtectedRoute = ({ children }) => {
   }
   return children;
 };
-
 const App = () => {
   return (
     <AppContextProvider>
@@ -65,7 +63,7 @@ const App = () => {
               <Route path="/laundry/inventorymanagement"element={<Inventory/>}/>  
               <Route path="/cab"element={<Cab/>}/>
               <Route path="/cabbookingform"element={<Cabbookingform/>}/>
-              <Route path="/updatebookingcab"element={<Cabbookingform/>}/>     
+                  <Route path="/pantry"element={<Pantry/>}/>
                     </Routes>
                   </main>
                 </div>
@@ -77,5 +75,4 @@ const App = () => {
     </AppContextProvider>
   );
 };
-
 export default App;
