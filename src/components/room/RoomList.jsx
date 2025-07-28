@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Plus,
   Edit,
@@ -8,6 +8,7 @@ import {
   ChevronRight,
   Loader,
   BedDouble,
+  ChevronDown,
 } from "lucide-react";
 import axios from "axios";
 import RoomForm from "./RoomForm";
@@ -40,10 +41,25 @@ const RoomList = () => {
   const [limit, setLimit] = useState(9);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const getAuthToken = () => {
     return localStorage.getItem("token");
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -259,8 +275,8 @@ const RoomList = () => {
 
   return (
     <div className="p-6 space-y-6 min-h-screen overflow-y-auto bg-[#fff9e6]">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-dark">Rooms</h2>
+      <div className="flex items-center justify-between  mt-6 ">
+        <h1 className="text-3xl font-extrabold text-[#1f2937]">Rooms</h1>{" "}
         <button
           onClick={handleAddRoom}
           className="bg-secondary text-dark px-4 py-2 cursor-pointer rounded-lg hover:shadow-lg transition-shadow font-medium"
@@ -288,26 +304,46 @@ const RoomList = () => {
       </div>
 
       {/* Filter Buttons */}
-      <div className="flex space-x-2 ">
-        {["all", "available", "booked", "maintenance"].map((status) => (
+      <div className="flex justify-end" ref={dropdownRef}>
+        <div className="relative">
           <button
-            key={status}
-            onClick={() => {
-              setStatusFilter(status);
-              setPage(1);
-            }}
-            className={`px-4 py-2 rounded-lg capitalize transition-colors  ${
-              statusFilter === status
-                ? "bg-secondary text-dark font-medium cursor-pointer"
-                : "bg-white/50 text-dark/70 hover:bg-secondary/50 cursor-pointer"
-            }`}
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
           >
-            {status}
+            <span className="capitalize mr-2">{statusFilter}</span>
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${
+                isDropdownOpen ? "rotate-180" : ""
+              }`}
+            />
           </button>
-        ))}
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg z-10 py-1 border border-gray-100">
+              {["all", "available", "booked", "maintenance"].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => {
+                    setStatusFilter(status);
+                    setPage(1);
+                    setIsDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 capitalize transition-colors hover:bg-gray-50 ${
+                    statusFilter === status
+                      ? "font-medium text-primary"
+                      : "text-dark/70"
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {Object.keys(categories).length > 0 && (
+      {/* {Object.keys(categories).length > 0 && (
         <div className="flex flex-wrap gap-2 mt-4">
           <span className="text-dark/70 self-center">Filter by Category:</span>
           <button
@@ -340,7 +376,7 @@ const RoomList = () => {
             </button>
           ))}
         </div>
-      )}
+      )} */}
 
       {error && <div className="text-red-500 text-sm">{error}</div>}
 
@@ -351,7 +387,7 @@ const RoomList = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {rooms.length > 0 ? (
               rooms.map((room) => (
                 <div

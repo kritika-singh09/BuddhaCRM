@@ -115,7 +115,7 @@ const CategoryList = () => {
 
   return (
     <div className="p-6 overflow-auto h-full bg-background">
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 mt-6 ">
         <h1 className="text-3xl font-extrabold text-[#1f2937]">
           Room Categories
         </h1>
@@ -150,7 +150,10 @@ const CategoryList = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody
+              className="bg-white divide-y divide-gray-200 overflow-auto"
+              style={{ scrollbarWidth: "none" }}
+            >
               {categories.map((category) => (
                 <tr key={category._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap font-medium">
