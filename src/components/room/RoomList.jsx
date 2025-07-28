@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, BedDouble } from "lucide-react";
-import RoomForm from "./RoomForm";
+import { useState, useRef, useEffect } from "react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Loader,
+  BedDouble,
+  ChevronDown,
+} from "lucide-react";
 import axios from "axios";
+import RoomForm from "./RoomForm";
 
 const RoomList = () => {
   const [rooms, setRooms] = useState([]);
+  const [categories, setCategories] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -21,13 +32,35 @@ const RoomList = () => {
     description: "",
     images: [],
   });
-  const [categories, setCategories] = useState({});
+
+  // New state for filtering and pagination
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(9);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   const getAuthToken = () => {
-    return localStorage.getItem("token"); // Assuming your token is stored in localStorage
+    return localStorage.getItem("token");
   };
 
-  // Fetch all rooms and categories
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -36,17 +69,67 @@ const RoomList = () => {
     };
 
     fetchData();
-  }, []);
+  }, [page, statusFilter, categoryFilter, searchTerm]);
 
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5000/api/rooms/all", {
+
+      // Build query parameters (in a real implementation, you'd use these with your API)
+      let url = "http://localhost:5000/api/rooms/all";
+
+      const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
         },
       });
-      setRooms(response.data);
+
+      let filteredRooms = response.data;
+
+      // Client-side filtering (replace with server-side filtering when API supports it)
+      if (statusFilter !== "all") {
+        filteredRooms = filteredRooms.filter((room) =>
+          statusFilter === "available"
+            ? room.status === "available"
+            : statusFilter === "booked"
+            ? room.status === "booked"
+            : statusFilter === "maintenance"
+            ? room.status === "maintenance"
+            : true
+        );
+      }
+
+      if (categoryFilter) {
+        filteredRooms = filteredRooms.filter(
+          (room) =>
+            room.category === categoryFilter ||
+            (room.category && room.category._id === categoryFilter)
+        );
+      }
+
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        filteredRooms = filteredRooms.filter(
+          (room) =>
+            room.title.toLowerCase().includes(term) ||
+            room.room_number.toString().includes(term)
+        );
+      }
+
+      // Calculate pagination
+      const totalItems = filteredRooms.length;
+      const totalPages = Math.ceil(totalItems / limit);
+
+      // Apply pagination
+      const startIndex = (page - 1) * limit;
+      const paginatedRooms = filteredRooms.slice(
+        startIndex,
+        startIndex + limit
+      );
+
+      setRooms(paginatedRooms);
+      setTotal(totalItems);
+      setTotalPages(totalPages);
       setError(null);
     } catch (err) {
       setError("Failed to fetch rooms");
@@ -58,13 +141,6 @@ const RoomList = () => {
 
   const fetchCategories = async () => {
     try {
-      // Check if categories are already cached in localStorage
-      const cachedCategories = localStorage.getItem("roomCategories");
-      if (cachedCategories) {
-        setCategories(JSON.parse(cachedCategories));
-        return;
-      }
-
       const response = await axios.get(
         "http://localhost:5000/api/categories/all"
       );
@@ -73,8 +149,6 @@ const RoomList = () => {
         categoryMap[category._id] = category.name;
       });
       setCategories(categoryMap);
-
-      // Cache the categories in localStorage
       localStorage.setItem("roomCategories", JSON.stringify(categoryMap));
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -146,13 +220,12 @@ const RoomList = () => {
         category: currentRoom.category,
         room_number: currentRoom.room_number,
         price: currentRoom.price,
-        extra_bed: currentRoom.exptra_bed, // Note: API expects "extra_bed" not "exptra_bed"
+        extra_bed: currentRoom.exptra_bed,
         status: currentRoom.status,
         description: currentRoom.description,
         images: currentRoom.images,
       };
 
-      // Set authorization headers for all requests
       const config = {
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
@@ -160,7 +233,6 @@ const RoomList = () => {
       };
 
       if (editMode) {
-        // Update existing room with authorization
         const response = await axios.put(
           `http://localhost:5000/api/rooms/update/${currentRoom._id}`,
           roomData,
@@ -173,13 +245,11 @@ const RoomList = () => {
           )
         );
       } else {
-        // Create new room with authorization
         const response = await axios.post(
           "http://localhost:5000/api/rooms/add",
           roomData,
           config
         );
-        // The API returns response.room for the new room
         setRooms([...rooms, response.data.room]);
       }
 
@@ -195,135 +265,260 @@ const RoomList = () => {
       case "available":
         return "bg-green-100 text-green-800";
       case "booked":
-        return "bg-blue-100 text-blue-800";
-      case "maintenance":
         return "bg-red-100 text-red-800";
+      case "maintenance":
+        return "bg-yellow-100 text-yellow-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
   return (
-    <div className="p-6 overflow-auto h-full bg-background">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-extrabold text-text">Rooms</h1>
+    <div className="p-6 space-y-6 min-h-screen overflow-y-auto bg-[#fff9e6]">
+      <div className="flex items-center justify-between  mt-6 ">
+        <h1 className="text-3xl font-extrabold text-[#1f2937]">Rooms</h1>{" "}
         <button
           onClick={handleAddRoom}
-          className="bg-primary text-white px-4 py-2 rounded-lg flex items-center"
+          className="bg-secondary text-dark px-4 py-2 cursor-pointer rounded-lg hover:shadow-lg transition-shadow font-medium"
         >
-          <Plus size={18} className="mr-2" /> Add Room
+          <Plus className="w-4 h-4 inline mr-2" />
+          Add Room
         </button>
       </div>
 
-      {loading ? (
-        <div className="text-center py-8">Loading rooms...</div>
-      ) : error ? (
-        <div className="text-center py-8 text-red-600">{error}</div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-md overflow-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Room
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Room Number
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {rooms.map((room) => (
-                <tr key={room._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {room.images && room.images.length > 0 ? (
-                        <img
-                          src={room.images[0]}
-                          alt={room.title}
-                          className="w-10 h-10 rounded-full mr-3 object-cover"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                          <BedDouble size={16} />
-                        </div>
-                      )}
-                      <div>
-                        <div className="font-medium">{room.title}</div>
-                        <div className="text-xs text-gray-500">
-                          {room.exptra_bed
-                            ? "Extra bed available"
-                            : "No extra bed"}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {room.category &&
-                    typeof room.category === "object" &&
-                    room.category.name
-                      ? room.category.name
-                      : categories[room.category] || "Unknown"}
-                  </td>
+      {/* Search and Filter */}
+      <div className="flex flex-col md:flex-row md:items-center gap-4 ">
+        <div className="relative flex-grow">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-dark/50 w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Search by room title or number..."
+            value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary"
+          />
+        </div>
+      </div>
 
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {room.room_number}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">₹{room.price}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                        ${getStatusClass(room.status)}`}
-                    >
-                      {room.status
-                        ? room.status.charAt(0).toUpperCase() +
-                          room.status.slice(1)
-                        : "Unknown"}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex space-x-2">
+      {/* Filter Buttons */}
+      <div className="flex justify-end" ref={dropdownRef}>
+        <div className="relative">
+          <button
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center px-4 py-2 bg-white rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+          >
+            <span className="capitalize mr-2">{statusFilter}</span>
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${
+                isDropdownOpen ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg z-10 py-1 border border-gray-100">
+              {["all", "available", "booked", "maintenance"].map((status) => (
+                <button
+                  key={status}
+                  onClick={() => {
+                    setStatusFilter(status);
+                    setPage(1);
+                    setIsDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2 capitalize transition-colors hover:bg-gray-50 ${
+                    statusFilter === status
+                      ? "font-medium text-primary"
+                      : "text-dark/70"
+                  }`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* {Object.keys(categories).length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-4">
+          <span className="text-dark/70 self-center">Filter by Category:</span>
+          <button
+            onClick={() => {
+              setCategoryFilter("");
+              setPage(1);
+            }}
+            className={`px-3 py-1 rounded-lg text-sm ${
+              categoryFilter === ""
+                ? "bg-secondary text-dark font-medium "
+                : "bg-primary/30 text-dark cursor-pointer"
+            }`}
+          >
+            All
+          </button>
+          {Object.entries(categories).map(([id, name]) => (
+            <button
+              key={id}
+              onClick={() => {
+                setCategoryFilter(id);
+                setPage(1);
+              }}
+              className={`px-3 py-1 rounded-lg text-sm ${
+                categoryFilter === id
+                  ? "bg-secondary text-dark font-medium "
+                  : "bg-primary/30 text-dark cursor-pointer"
+              }`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )} */}
+
+      {error && <div className="text-red-500 text-sm">{error}</div>}
+
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <Loader className="w-8 h-8 text-secondary animate-spin" />
+          <span className="ml-2 text-dark">Loading rooms...</span>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+            {rooms.length > 0 ? (
+              rooms.map((room) => (
+                <div
+                  key={room._id}
+                  className="bg-primary/50 border border-gray-200 backdrop-blur-sm rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all"
+                >
+                  {/* Image Section */}
+                  <div className="h-48 bg-gray-200 relative overflow-hidden">
+                    {room.images &&
+                    room.images.length > 0 &&
+                    room.images[0].startsWith("data:image/") ? (
+                      <img
+                        src={room.images[0]}
+                        alt={room.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                        <BedDouble size={48} className="text-gray-400" />
+                      </div>
+                    )}
+
+                    <div className="absolute top-2 right-2 flex space-x-2">
                       <button
                         onClick={() => handleEditRoom(room)}
-                        className="p-1 rounded-full text-blue-600 hover:bg-blue-50"
+                        className="bg-white/80 cursor-pointer text-dark p-1.5 rounded-full hover:bg-white"
                       >
-                        <Edit size={18} />
+                        <Edit className="w-4 h-4 text-blue-600" />
                       </button>
                       <button
                         onClick={() => handleDeleteRoom(room._id)}
-                        className="p-1 rounded-full text-red-600 hover:bg-red-50"
+                        className="bg-white/80 text-red-600 p-1.5 rounded-full hover:bg-white"
                       >
-                        <Trash2 size={18} />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-              {rooms.length === 0 && (
-                <tr>
-                  <td
-                    colSpan="6"
-                    className="px-6 py-8 text-center text-gray-500"
-                  >
-                    No rooms found. Add a new room to get started.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    <div className="absolute top-2 left-2">
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${getStatusClass(
+                          room.status
+                        )}`}
+                      >
+                        {room.status
+                          ? room.status.charAt(0).toUpperCase() +
+                            room.status.slice(1)
+                          : "Unknown"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-dark">
+                        Room {room.room_number}
+                      </h3>
+                    </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-sm text-dark/70">Room title:</span>
+                      <span className="font-semibold text-dark">
+                        {room.title}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-sm text-dark/70">Category:</span>
+                      <span className="font-semibold text-dark">
+                        {room.category &&
+                        typeof room.category === "object" &&
+                        room.category.name
+                          ? room.category.name
+                          : categories[room.category] || "Unknown"}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-dark/70">Price:</span>
+                        <span className="font-semibold text-dark">
+                          ₹{room.price}/night
+                        </span>
+                      </div>
+
+                      {room.exptra_bed && (
+                        <div className="mt-2 py-1 px-2 bg-blue-100 text-blue-800 text-xs rounded">
+                          Extra Bed Available
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-12 text-dark/70">
+                No rooms found matching your criteria
+              </div>
+            )}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center mt-6 space-x-2">
+              <button
+                onClick={() => setPage(Math.max(1, page - 1))}
+                disabled={page === 1}
+                className={`p-2 rounded-lg ${
+                  page === 1
+                    ? "text-dark/40 cursor-not-allowed"
+                    : "text-dark hover:bg-secondary/50"
+                }`}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+
+              <span className="text-dark">
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                onClick={() => setPage(Math.min(totalPages, page + 1))}
+                disabled={page === totalPages}
+                className={`p-2 rounded-lg ${
+                  page === totalPages
+                    ? "text-dark/40 cursor-not-allowed"
+                    : "text-dark hover:bg-secondary/50"
+                }`}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       <RoomForm

@@ -9,6 +9,7 @@ import CategoryList from "./components/category/CategoryList.jsx";
 import RoomList from "./components/room/RoomList";
 import LoginPage from "./components/login/LoginPage";
 import StaffList from "./components/staff/StaffList";
+
 import BookingForm from "./components/booking/BookingForm";
 import Booking from "./components/booking/Booking";
 import Reservation from "./components/reservation/Reservation";
@@ -25,6 +26,10 @@ const BookingFormPage = () => {
   const navigate = useNavigate();
   return <BookingForm onClose={() => navigate('/booking')} />;
 };
+
+import StaffWorkTask from "./components/StaffWorkTask";
+// Protected route component
+
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -44,15 +49,20 @@ const App = () => {
             <ProtectedRoute>
               <div className="flex h-screen bg-app-gradient font-sans">
                 <Sidebar />
-                <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 flex flex-col ml-64">
                   <Header />
-                  <main className="flex-1 overflow-y-auto">
+
+                  <main className="flex-1">
+
                     <Routes>
+                      <Route path="/" element={<Dashboard />} />
                       <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/tasks" element={<TaskAssign />} />
+                      <Route path="/tasks" element={<TaskAssign />} />{" "}
+                      {/* Make sure this route exists */}
                       <Route path="/category" element={<CategoryList />} />
                       <Route path="/room" element={<RoomList />} />
                       <Route path="/staff" element={<StaffList />} />
+
  <Route path="/bookingform" element={<BookingFormPage />} />
               <Route path="/booking" element={<Booking />} />
                <Route path="/reservation"element={<Reservation/>}/>
@@ -64,6 +74,10 @@ const App = () => {
               <Route path="/cab"element={<Cab/>}/>
               <Route path="/cabbookingform"element={<Cabbookingform/>}/>
                   <Route path="/pantry"element={<Pantry/>}/>
+
+                      <Route path="/staff-work" element={<StaffWorkTask />} />
+                      {/* Add more routes as needed */}
+
                     </Routes>
                   </main>
                 </div>

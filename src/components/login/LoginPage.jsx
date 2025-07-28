@@ -11,6 +11,8 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // In LoginPage.jsx
+  // In LoginPage.jsx, update the handleSubmit function:
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -29,12 +31,13 @@ const LoginPage = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("username", response.data.username);
+      localStorage.setItem("userId", response.data.userId); // Add this line
       localStorage.setItem(
         "department",
         JSON.stringify(response.data.department)
       );
 
-      // Redirect to dashboard
+      // Always redirect to dashboard after login
       navigate("/dashboard");
     } catch (err) {
       setError(

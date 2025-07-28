@@ -46,24 +46,24 @@ const StaffForm = ({
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              value={currentStaff.email}
-              onChange={(e) =>
-                setCurrentStaff({ ...currentStaff, email: e.target.value })
-              }
-              className="w-full px-3 py-2 border rounded-md"
-              required
-            />
-          </div>
-          <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Username</label>
             <input
               type="text"
               value={currentStaff.username}
               onChange={(e) =>
                 setCurrentStaff({ ...currentStaff, username: e.target.value })
+              }
+              className="w-full px-3 py-2 border rounded-md"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium mb-1">Email</label>
+            <input
+              type="email"
+              value={currentStaff.email}
+              onChange={(e) =>
+                setCurrentStaff({ ...currentStaff, email: e.target.value })
               }
               className="w-full px-3 py-2 border rounded-md"
               required
