@@ -94,9 +94,9 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed inset-y-0 left-0 bg-[#1f2937] text-[#c2ab65] w-64 transform ${
+      className={`fixed top-0 inset-y-0 left-0 bg-[#1f2937] text-[#c2ab65] w-64 transform ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      } transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:flex md:flex-col z-30`}
+      } transition-transform duration-300 ease-in-out  md:translate-x-0 md:flex md:flex-col z-30`}
     >
       <div className="flex flex-col items-center p-2 relative">
         <img src={logoImage} alt="Buddha Avenue" className="h-30 mx-auto" />
